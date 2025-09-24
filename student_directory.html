@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Directory</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 20px; }
+h1 { text-align: center; }
+.student-list { list-style: none; padding: 0; }
+.student-item { display: flex; align-items: center; background: white; margin: 10px 0; padding: 12px; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: 0.2s; }
+.student-item:hover { background: #f0f0f0; }
+.student-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; background: #ddd; object-fit: cover; }
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 20px; border-radius: 10px; width: 320px; max-width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center; }
+.modal-content img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; }
+.close-btn { margin-top: 15px; padding: 8px 16px; background: crimson; color: white; border: none; border-radius: 6px; cursor: pointer; }
+.close-btn:hover { background: darkred; }
+</style>
+</head>
+<body>
+<h1>Student Directory</h1>
+<ul class="student-list" id="studentList"></ul>
+
+<div class="modal" id="studentModal">
+<div class="modal-content">
+<img id="modalAvatar" src="" alt="Avatar">
+<h2 id="modalName"></h2>
+<p><b>Roll No:</b> <span id="modalRoll"></span></p>
+<p><b>GR No:</b> <span id="modalGR"></span></p>
+<p><b>Percentage:</b> <span id="modalPercentage"></span></p>
+<p><b>Skills:</b> <span id="modalSkills"></span></p>
+<p><b>Likes:</b> <span id="modalLikes"></span></p>
+<p><b>Dislikes:</b> <span id="modalDislikes"></span></p>
+<p><b>Best Friend:</b> <span id="modalFriend"></span></p>
+<button class="close-btn" onclick="closeModal()">Close</button>
+</div>
+</div>
+
+<script>
+const students = [
+  {roll: 1, gr: 31841, name: "BIND PURNIMA RAJKUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll1.jpg"},
+  {roll: 2, gr: 31971, name: "DAS PRIYANKA KUMARI MAHENDRA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll2.jpg"},
+  {roll: 3, gr: 31405, name: "DUBEY VANSHIKA PANKAJ", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll3.jpg"},
+  {roll: 4, gr: 31875, name: "GAUTAM KOMAL RAJESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll4.jpg"},
+  {roll: 5, gr: 31996, name: "GUPTA LAXMI PARMATMA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll5.jpg"},
+  {roll: 6, gr: 32069, name: "KHAN ALSIBA NOOR MOHAMMAD", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll6.jpg"},
+  {roll: 7, gr: 30767, name: "KHAN KAUSAR NASIR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll7.jpg"},
+  {roll: 8, gr: 30768, name: "KHAN NAZIYA BEGUM SABIR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll8.jpg"},
+  {roll: 9, gr: 30725, name: "KHAN ZOYA MOHD. SALIM", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll9.jpg"},
+  {roll: 10, gr: 31970, name: "KORI SONAM ANUJ KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll10.jpg"},
+  {roll: 11, gr: 31885, name: "PANDA MANASI NARAYAN", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll11.jpg"},
+  {roll: 12, gr: 31863, name: "PANIGRAHI SANDHYARANI MANOJ", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll12.jpg"},
+  {roll: 13, gr: 30709, name: "PRAJAPATI KHUSHBU RAKESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll13.jpg"},
+  {roll: 14, gr: 30765, name: "SAHU ENSEE INDRESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll14.jpg"},
+  {roll: 15, gr: 30711, name: "SAHU JIYA SANTOSH KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll15.jpg"},
+  {roll: 16, gr: 30799, name: "SAHU RITU RAMNARESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll16.jpg"},
+  {roll: 17, gr: 31922, name: "SAHU RIYA RAKESH KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll17.jpg"},
+  {roll: 18, gr: 31730, name: "SHARMA MUSKAN KUMARI ANNU", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll18.jpg"},
+  {roll: 19, gr: 31858, name: "SHARMA RAJKUMARI ASHOK", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll19.jpg"},
+  {roll: 20, gr: 31852, name: "SHARMA SIDDHI SANJAY", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll20.jpg"},
+  {roll: 21, gr: 30716, name: "SHARMA VAISHNAVI AMIT", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll21.jpg"},
+  {roll: 22, gr: 31870, name: "SHUKLA PARI DEVIPRASAD", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll22.jpg"},
+  {roll: 23, gr: 31839, name: "SINGH ANANYA BHUPENDRA KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll23.jpg"},
+  {roll: 24, gr: 31369, name: "SINGH KHUSHBOO MUNNA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll24.jpg"},
+  {roll: 25, gr: 31980, name: "SONI REEMA RAVI", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll25.jpg"},
+  {roll: 26, gr: 31874, name: "THAKUR POOJA KUMARI MUNNA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll26.jpg"},
+  {roll: 27, gr: 31964, name: "VARMA SHEETAL PRAMOD", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll27.jpg"},
+  {roll: 28, gr: 32031, name: "YADAV POONAM SURENDRA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll28.jpg"},
+  {roll: 29, gr: 30830, name: "CHAURASIYA NAGESH DEEPAK", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll29.jpg"},
+  {roll: 30, gr: 31020, name: "GAUD ARPIT DINESH KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll30.jpg"},
+  {roll: 31, gr: 30710, name: "GUPTA ANKUR RAMESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll31.jpg"},
+  {roll: 32, gr: 31894, name: "GUPTA ANSH SANTOSH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll32.jpg"},
+  {roll: 33, gr: 30726, name: "GUPTA DEVANAND DILIP", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll33.jpg"},
+  {roll: 34, gr: 31912, name: "GUPTA SAHIL HIRALAL", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll34.jpg"},
+  {roll: 35, gr: 31641, name: "GURJAR BHAVVESH RAMESHCHANDRA SEVAK", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll35.jpg"},
+  {roll: 36, gr: 30998, name: "JAISWAL AADARSH KAILASH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll36.jpg"},
+  {roll: 37, gr: 31937, name: "JAISWAL SHYAMSUNDAR NANDKISHOR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll37.jpg"},
+  {roll: 38, gr: 31845, name: "JAISWAR RAJ LOLARAKH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll38.jpg"},
+  {roll: 39, gr: 31877, name: "JAISWAR RAJ RAJESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll39.jpg"},
+  {roll: 40, gr: 31838, name: "JAISWAR VIJAY DEVENDRA", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll40.jpg"},
+  {roll: 41, gr: 31728, name: "KANOJIYA AVINASH BRIJESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll41.jpg"},
+  {roll: 42, gr: 32011, name: "KHAN RIZWAN SAHIM", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll42.jpg"},
+  {roll: 43, gr: 30758, name: "KHAN SHAIZAN ISMAIL", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll43.jpg"},
+  {roll: 44, gr: 30764, name: "MANDAL AMIT DINESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll44.jpg"},
+  {roll: 45, gr: 31899, name: "PATHAK AMIT KUMAR SUNIL KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll45.jpg"},
+  {roll: 46, gr: 31984, name: "PRAJAPATI PRATIK RAJKUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll46.jpg"},
+  {roll: 47, gr: 31445, name: "PRAJAPATI SUMIT MANOJ", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll47.jpg"},
+  {roll: 48, gr: 31900, name: "RAI SURAJ MUKESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll48.jpg"},
+  {roll: 49, gr: 31942, name: "RAJBHAR ANURAG RAJESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll49.jpg"},
+  {roll: 50, gr: 32003, name: "RAM ANUJ KUMAR JAGDISH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll50.jpg"},
+  {roll: 51, gr: 31840, name: "SAHU AAYUSH KUMAR SHRAVAN KUMAR", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll51.jpg"},
+  {roll: 52, gr: 30771, name: "SAHU ABHISHEK INDRESH", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll52.jpg"},
+  {roll: 53, gr: 31857, name: "SAHU SHIVAM NIRMAL", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll53.jpg"},
+  {roll: 54, gr: 31933, name: "SHARMA AASHISH HEERALAL", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll54.jpg"},
+  {roll: 55, gr: 31972, name: "SHARMA SUNNY SANJAY", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll55.jpg"},
+  {roll: 56, gr: 30759, name: "SINGH AMAN MANOJ", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll56.jpg"},
+  {roll: 57, gr: 31741, name: "SONI ANSH AJAY", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll57.jpg"},
+  {roll: 58, gr: 31884, name: "SUTAR ADITYA AJIT", percentage: "idk", skills: "idk", likes: "idk", dislikes: "idk", friend: "idk", avatar: "photos/roll58.jpg"},
+
+];
+
+const list = document.getElementById("studentList");
+const modal = document.getElementById("studentModal");
+
+students.sort((a,b) => a.roll - b.roll).forEach(student => {
+  const li = document.createElement("li");
+  li.className = "student-item";
+  li.innerHTML = `<img src="${student.avatar || 'photos/default.jpg'}" class="student-avatar" alt="Avatar"><div><strong>${student.roll}. ${student.name}</strong></div>`;
+  li.onclick = () => openModal(student);
+  list.appendChild(li);
+});
+
+function openModal(student) {
+  document.getElementById("modalAvatar").src = student.avatar || 'photos/default.jpg';
+  document.getElementById("modalName").innerText = student.name;
+  document.getElementById("modalRoll").innerText = student.roll;
+  document.getElementById("modalGR").innerText = student.gr;
+  document.getElementById("modalPercentage").innerText = student.percentage;
+  document.getElementById("modalSkills").innerText = student.skills;
+  document.getElementById("modalLikes").innerText = student.likes;
+  document.getElementById("modalDislikes").innerText = student.dislikes;
+  document.getElementById("modalFriend").innerText = student.friend;
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  modal.style.display = "none";
+}
+
+window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; }
+</script>
+</body>
+</html>
