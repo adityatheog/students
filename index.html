@@ -73,17 +73,17 @@ h1 {
 .student-item {
   display: flex;
   align-items: center;
-  background: rgba(0,0,0,0.5); /* darker background */
+  background: rgba(0,0,0,0.5);
   margin: 8px 0;
   padding: 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
-  color: #ffff00; /* bright text to stand out */
+  color: #ffff00;
 }
 .student-item:hover {
-  background: rgba(255,127,80,0.8); /* brighter hover */
-  color: #000; /* optional: change text color on hover */
+  background: rgba(255,127,80,0.8);
+  color: #000;
 }
 .student-avatar {
   width: 50px;
@@ -103,8 +103,8 @@ h1 {
   z-index: 1000;
 }
 .modal-content {
-  background: #1e1e2f; /* dark purple/blue */
-  color: #fff; /* text color to contrast */
+  background: #1e1e2f;
+  color: #fff;
   padding: 20px;
   border-radius: 12px;
   width: 350px;
@@ -142,6 +142,7 @@ h1 {
 </style>
 </head>
 <body>
+
   <!-- Background video -->
   <video autoplay muted loop class="background-video" id="bgVideo">
     <source src="photos/background.mp4" type="video/mp4">
@@ -155,61 +156,40 @@ h1 {
   <!-- Play/pause button -->
   <button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
 
-  <!-- Main content: h1, sections, student list, modal -->
   <h1>10th Students</h1>
+
   <div class="section-list">
-    <!-- Section buttons -->
+    <div class="section-item" onclick="showSection('A')">10th A</div>
+    <div class="section-item" onclick="showSection('B')">10th B</div>
+    <div class="section-item" onclick="showSection('C')">10th C</div>
+    <div class="section-item" onclick="showSection('D')">10th D</div>
+    <div class="section-item" onclick="showSection('E')">10th E</div>
   </div>
+
   <div class="teacher-container" id="teacherName">Class Teacher: Ghanshyam Viswakarma</div>
+
   <ul class="student-list" id="studentList"></ul>
 
   <div class="modal" id="studentModal">
-    <!-- Modal content -->
+    <div class="modal-content">
+      <img id="modalAvatar" src="" alt="Avatar">
+      <h2 id="modalNick"></h2>
+      <p><b>Full Name:</b> <span id="modalName"></span></p>
+      <p><b>Roll No:</b> <span id="modalRoll"></span></p>
+      <p><b>GR No:</b> <span id="modalGR"></span></p>
+      <p><b>Bio:</b> <span id="modalBio"></span></p>
+      <p id="modalInstagram"></p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
   </div>
-
-  <!-- Your existing JS scripts -->
-  <script>
-    const music = document.getElementById('bgMusic'); // Only declare once
-
-    function toggleMusic() {
-      if (music.paused) {
-        music.play();
-      } else {
-        music.pause();
-      }
-    }
-
-    // Your existing JS functions: showSection, openModal, closeModal, etc.
-    showSection("C"); // call after DOM is ready
-  </script>
-    </body>
-
-<h1>10th Students</h1>
-<div class="section-list">
-  <div class="section-item" onclick="showSection('A')">10th A</div>
-  <div class="section-item" onclick="showSection('B')">10th B</div>
-  <div class="section-item" onclick="showSection('C')">10th C</div>
-  <div class="section-item" onclick="showSection('D')">10th D</div>
-  <div class="section-item" onclick="showSection('E')">10th E</div>
-</div>
-
-<div class="teacher-container" id="teacherName">Class Teacher: Ghanshyam Viswakarma</div>
-<ul class="student-list" id="studentList"></ul>
-
-<div class="modal" id="studentModal">
-  <div class="modal-content">
-    <img id="modalAvatar" src="" alt="Avatar">
-    <h2 id="modalNick"></h2>
-    <p><b>Full Name:</b> <span id="modalName"></span></p>
-    <p><b>Roll No:</b> <span id="modalRoll"></span></p>
-    <p><b>GR No:</b> <span id="modalGR"></span></p>
-    <p><b>Bio:</b> <span id="modalBio"></span></p>
-    <p id="modalInstagram"></p>
-    <button class="close-btn" onclick="closeModal()">Close</button>
-  </div>
-</div>
 
 <script>
+const music = document.getElementById('bgMusic');
+function toggleMusic() {
+  if (music.paused) music.play();
+  else music.pause();
+}
+
 const studentsData = {
   "A": [],
   "B": [],
@@ -293,12 +273,14 @@ function showSection(section) {
     students.forEach(student => {
       const li = document.createElement("li");
       li.className = "student-item";
-      li.innerHTML = `<img src="${student.avatar || 'photos/default.jpg'}" class="student-avatar" alt="Avatar"><div><strong>${student.nick}</strong></div>`;
+      li.innerHTML = `<img src="${student.avatar || 'photos/default.jpg'}" class="student-avatar" alt="Avatar">
+                      <div><strong>${student.nick}</strong></div>`;
       li.onclick = () => openModal(student);
       list.appendChild(li);
     });
   }
 
+  // Show teacher only for class C
   teacherDiv.style.display = (section === "C") ? "block" : "none";
 }
 
@@ -309,6 +291,7 @@ function openModal(student) {
   document.getElementById("modalRoll").innerText = student.roll || "";
   document.getElementById("modalGR").innerText = student.gr || "";
   document.getElementById("modalBio").innerText = student.bio || "";
+
   const insta = document.getElementById("modalInstagram");
   if(student.insta) {
     insta.innerHTML = `<b>Instagram:</b> <a href="https://instagram.com/${student.insta}" target="_blank">
@@ -317,6 +300,7 @@ function openModal(student) {
   } else {
     insta.innerHTML = "";
   }
+
   document.getElementById("studentModal").style.display = "flex";
 }
 
@@ -324,16 +308,23 @@ function closeModal() {
   document.getElementById("studentModal").style.display = "none";
 }
 
-window.onclick = (e) => { if(e.target == document.getElementById("studentModal")) closeModal(); }
+// Close modal when clicking outside
+window.onclick = (e) => {
+  if(e.target === document.getElementById("studentModal")) closeModal();
+}
 
+// Hide video if not found
 const video = document.getElementById("bgVideo");
-video.onerror = () => { video.style.display = "none"; document.body.style.background = "linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #ffb347)"; }
+video.onerror = () => {
+  video.style.display = "none";
+  document.body.style.background = "linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #ffb347)";
+}
 
-const music = document.getElementById("bgMusic");
+// Hide music if not found
 music.onerror = () => { music.pause(); }
 
+// Show default section on page load
 showSection("C");
-
 </script>
 </body>
-  </html>
+</html>
