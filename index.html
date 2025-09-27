@@ -142,33 +142,47 @@ h1 {
 </style>
 </head>
 <body>
-<video autoplay muted loop class="background-video" id="bgVideo">
-  <source src="photos/background.mp4" type="video/mp4">
-</video>
-<audio id="bgMusic" loop>
-<audio id="bgMusic" loop>
-  <source src="photos/music.mp3" type="audio/mpeg">
-</audio>
+  <!-- Background video -->
+  <video autoplay muted loop class="background-video" id="bgVideo">
+    <source src="photos/background.mp4" type="video/mp4">
+  </video>
 
-<!-- Play/pause button -->
-<button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
+  <!-- Music audio -->
+  <audio id="bgMusic" loop>
+    <source src="photos/music.mp3" type="audio/mpeg">
+  </audio>
 
-<script>
-const music = document.getElementById('bgMusic'); // single declaration
+  <!-- Play/pause button -->
+  <button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
 
-function toggleMusic() {
-  if (music.paused) {
-    music.play();
-  } else {
-    music.pause();
-  }
-}
+  <!-- Main content: h1, sections, student list, modal -->
+  <h1>10th Students</h1>
+  <div class="section-list">
+    <!-- Section buttons -->
+  </div>
+  <div class="teacher-container" id="teacherName">Class Teacher: Ghanshyam Viswakarma</div>
+  <ul class="student-list" id="studentList"></ul>
 
-// Load default section after DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-  showSection("C");
-});
-</script>
+  <div class="modal" id="studentModal">
+    <!-- Modal content -->
+  </div>
+
+  <!-- Your existing JS scripts -->
+  <script>
+    const music = document.getElementById('bgMusic'); // Only declare once
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+
+    // Your existing JS functions: showSection, openModal, closeModal, etc.
+    showSection("C"); // call after DOM is ready
+  </script>
+    </body>
 
 <h1>10th Students</h1>
 <div class="section-list">
