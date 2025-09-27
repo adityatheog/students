@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10th Students</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  overflow-x: hidden;
+  background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #ffb347);
+  background-size: 800% 800%;
+  animation: gradientBG 20s ease infinite;
+}
+@keyframes gradientBG {
+  0% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+  background: linear-gradient(90deg, #ff6ec4, #7873f5, #4ade80, #ffb347);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 5s ease infinite;
+}
+@keyframes gradientText {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+.section-list {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.section-item {
+  padding: 10px 18px;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+}
+.section-item:hover {
+  background: #ff7f50;
+  transform: scale(1.05);
+}
+.teacher-container {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: rgb(0,255,255);
+  display: none;
+}
+.student-list {
+  list-style: none;
+  padding: 0;
+  max-width: 700px;
+  margin: auto;
+}
+.student-item {
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.5); /* darker background */
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #ffff00; /* bright text to stand out */
+}
+.student-item:hover {
+  background: rgba(255,127,80,0.8); /* brighter hover */
+  color: #000; /* optional: change text color on hover */
+}
+.student-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  background: #ddd;
+  object-fit: cover;
+}
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #1e1e2f; /* dark purple/blue */
+  color: #fff; /* text color to contrast */
+  padding: 20px;
+  border-radius: 12px;
+  width: 350px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+.modal-content img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+.close-btn {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background: crimson;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.close-btn:hover { background: darkred; }
+.modal a { color: #0077ff; text-decoration: none; font-weight: bold; display: flex; align-items: center; justify-content: center; gap:5px; }
+.modal a img { width:16px; height:16px; }
+.background-video {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  z-index: -1;
+}
+</style>
+</head>
+<body>
+<video autoplay muted loop class="background-video" id="bgVideo">
+  <source src="photos/background.mp4" type="video/mp4">
+</video>
+<audio autoplay loop id="bgMusic">
+  <source src="photos/music.mp3" type="audio/mpeg">
+</audio>
+
+<h1>10th Students</h1>
+<div class="section-list">
+  <div class="section-item" onclick="showSection('A')">10th A</div>
+  <div class="section-item" onclick="showSection('B')">10th B</div>
+  <div class="section-item" onclick="showSection('C')">10th C</div>
+  <div class="section-item" onclick="showSection('D')">10th D</div>
+  <div class="section-item" onclick="showSection('E')">10th E</div>
+</div>
+
+<div class="teacher-container" id="teacherName">Class Teacher: Ghanshyam Viswakarma</div>
+<ul class="student-list" id="studentList"></ul>
+
+<div class="modal" id="studentModal">
+  <div class="modal-content">
+    <img id="modalAvatar" src="" alt="Avatar">
+    <h2 id="modalNick"></h2>
+    <p><b>Full Name:</b> <span id="modalName"></span></p>
+    <p><b>Roll No:</b> <span id="modalRoll"></span></p>
+    <p><b>GR No:</b> <span id="modalGR"></span></p>
+    <p><b>Bio:</b> <span id="modalBio"></span></p>
+    <p id="modalInstagram"></p>
+    <button class="close-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+const studentsData = {
+  "A": [],
+  "B": [],
+  "C": [
+    {roll:1, gr:31841, name:"BIND PURNIMA RAJKUMAR", nick:"BIND", bio:"", avatar:"photos/roll1.jpg", insta:""},
+    {roll:2, gr:31971, name:"DAS PRIYANKA KUMARI MAHENDRA", nick:"PRIYANKA", bio:"", avatar:"photos/roll2.jpg", insta:""},
+    {roll:3, gr:31405, name:"DUBEY VANSHIKA PANKAJ", nick:"VANSHIKA", bio:"", avatar:"photos/roll3.jpg", insta:""},
+    {roll:4, gr:31875, name:"GAUTAM KOMAL RAJESH", nick:"KOMAL", bio:"", avatar:"photos/roll4.jpg", insta:""},
+    {roll:5, gr:31996, name:"GUPTA LAXMI PARMATMA", nick:"LAXMI", bio:"", avatar:"photos/roll5.jpg", insta:""},
+    {roll:6, gr:32069, name:"KHAN ALSIBA NOOR MOHAMMAD", nick:"ALSIBA", bio:"", avatar:"photos/roll6.jpg", insta:""},
+    {roll:7, gr:30767, name:"KHAN KAUSAR NASIR", nick:"KAUSAR", bio:"", avatar:"photos/roll7.jpg", insta:""},
+    {roll:8, gr:30768, name:"KHAN NAZIYA BEGUM SABIR", nick:"NAZIYA", bio:"", avatar:"photos/roll8.jpg", insta:""},
+    {roll:9, gr:30725, name:"KHAN ZOYA MOHD. SALIM", nick:"ZOYA", bio:"", avatar:"photos/roll9.jpg", insta:""},
+    {roll:10, gr:31970, name:"KORI SONAM ANUJ KUMAR", nick:"SONAM", bio:"", avatar:"photos/roll10.jpg", insta:""},
+    {roll:11, gr:31885, name:"PANDA MANASI NARAYAN", nick:"MANASI", bio:"", avatar:"photos/roll11.jpg", insta:""},
+    {roll:12, gr:31863, name:"PANIGRAHI SANDHYARANI MANOJ", nick:"SANDHYA", bio:"", avatar:"photos/roll12.jpg", insta:"its_me_sandhya_901"},
+    {roll:13, gr:30709, name:"PRAJAPATI KHUSHBU RAKESH", nick:"KHUSHBU", bio:"", avatar:"photos/roll13.jpg", insta:""},
+    {roll:14, gr:30765, name:"SAHU ENSEE INDRESH", nick:"ENSEE", bio:"", avatar:"photos/roll14.jpg", insta:""},
+    {roll:15, gr:30711, name:"SAHU JIYA SANTOSH KUMAR", nick:"JIYA", bio:"", avatar:"photos/roll15.jpg", insta:""},
+    {roll:16, gr:30799, name:"SAHU RITU RAMNARESH", nick:"RITU", bio:"", avatar:"photos/roll16.jpg", insta:""},
+    {roll:17, gr:31922, name:"SAHU RIYA RAKESH KUMAR", nick:"RIYA", bio:"", avatar:"photos/roll17.jpg", insta:""},
+    {roll:18, gr:31730, name:"SHARMA MUSKAN KUMARI ANNU", nick:"MUSKAN", bio:"", avatar:"photos/roll18.jpg", insta:""},
+    {roll:19, gr:31858, name:"SHARMA RAJKUMARI ASHOK", nick:"RAJKUMARI", bio:"", avatar:"photos/roll19.jpg", insta:""},
+    {roll:20, gr:31852, name:"SHARMA SIDDHI SANJAY", nick:"SIDDHI", bio:"", avatar:"photos/roll20.jpg", insta:""},
+    {roll:21, gr:30716, name:"SHARMA VAISHNAVI AMIT", nick:"VAISHNAVI", bio:"", avatar:"photos/roll21.jpg", insta:""},
+    {roll:22, gr:31870, name:"SHUKLA PARI DEVIPRASAD", nick:"PARI", bio:"", avatar:"photos/roll22.jpg", insta:""},
+    {roll:23, gr:31839, name:"SINGH ANANYA BHUPENDRA KUMAR", nick:"ANANYA", bio:"", avatar:"photos/roll23.jpg", insta:""},
+    {roll:24, gr:31369, name:"SINGH KHUSHBOO MUNNA", nick:"KHUSHBOO", bio:"", avatar:"photos/roll24.jpg", insta:""},
+    {roll:25, gr:31980, name:"SONI REEMA RAVI", nick:"REEMA", bio:"", avatar:"photos/roll25.jpg", insta:""},
+    {roll:26, gr:31874, name:"THAKUR POOJA KUMARI MUNNA", nick:"POOJA", bio:"", avatar:"photos/roll26.jpg", insta:""},
+    {roll:27, gr:31964, name:"VARMA SHEETAL PRAMOD", nick:"SHEETAL", bio:"", avatar:"photos/roll27.jpg", insta:""},
+    {roll:28, gr:32031, name:"YADAV POONAM SURENDRA", nick:"POONAM", bio:"", avatar:"photos/roll28.jpg", insta:""},
+    {roll:29, gr:30830, name:"CHAURASIYA NAGESH DEEPAK", nick:"NAGESH", bio:"", avatar:"photos/roll29.jpg", insta:""},
+    {roll:30, gr:31020, name:"GAUD ARPIT DINESH KUMAR", nick:"ARPIT", bio:"", avatar:"photos/roll30.jpg", insta:""},
+    {roll:31, gr:30710, name:"GUPTA ANKUR RAMESH", nick:"ANKUR", bio:"", avatar:"photos/roll31.jpg", insta:""},
+    {roll:32, gr:31894, name:"GUPTA ANSH SANTOSH", nick:"ANSH", bio:"", avatar:"photos/roll32.jpg", insta:""},
+    {roll:33, gr:30726, name:"GUPTA DEVANAND DILIP", nick:"DEVANAND", bio:"", avatar:"photos/roll33.jpg", insta:""},
+    {roll:34, gr:31912, name:"GUPTA SAHIL HIRALAL", nick:"SAHIL", bio:"", avatar:"photos/roll34.jpg", insta:""},
+    {roll:35, gr:31641, name:"GURJAR BHAVVESH RAMESHCHANDRA SEVAK", nick:"BHAVVESH", bio:"", avatar:"photos/roll35.jpg", insta:""},
+    {roll:36, gr:30998, name:"JAISWAL AADARSH KAILASH", nick:"AADARSH", bio:"", avatar:"photos/roll36.jpg", insta:"jais_aadarsh_18"},
+    {roll:37, gr:31937, name:"JAISWAL SHYAMSUNDAR NANDKISHOR", nick:"SHYAMSUNDAR", bio:"", avatar:"photos/roll37.jpg", insta:""},
+    {roll:38, gr:31845, name:"JAISWAR RAJ LOLARAKH", nick:"RAJ", bio:"", avatar:"photos/roll38.jpg", insta:""},
+    {roll:39, gr:31877, name:"JAISWAR RAJ RAJESH", nick:"RAJESH", bio:"", avatar:"photos/roll39.jpg", insta:""},
+    {roll:40, gr:31838, name:"JAISWAR VIJAY DEVENDRA", nick:"VIJAY", bio:"", avatar:"photos/roll40.jpg", insta:"vijayjais17"},
+    {roll:41, gr:31728, name:"KANOJIYA AVINASH BRIJESH", nick:"AVINASH", bio:"", avatar:"photos/roll41.jpg", insta:""},
+    {roll:42, gr:32011, name:"KHAN RIZWAN SAHIM", nick:"RIZWAN", bio:"", avatar:"photos/roll42.jpg", insta:""},
+    {roll:43, gr:30758, name:"KHAN SHAIZAN ISMAIL", nick:"SHAIZAN", bio:"", avatar:"photos/roll43.jpg", insta:""},
+    {roll:44, gr:30764, name:"MANDAL AMIT DINESH", nick:"AMIT", bio:"", avatar:"photos/roll44.jpg", insta:""},
+    {roll:45, gr:31899, name:"PATHAK AMIT KUMAR SUNIL KUMAR", nick:"AMIT", bio:"", avatar:"photos/roll45.jpg", insta:""},
+    {roll:46, gr:31984, name:"PRAJAPATI PRATIK RAJKUMAR", nick:"PRATIK", bio:"", avatar:"photos/roll46.jpg", insta:""},
+    {roll:47, gr:31445, name:"PRAJAPATI SUMIT MANOJ", nick:"SUMIT", bio:"", avatar:"photos/roll47.jpg", insta:""},
+    {roll:48, gr:31900, name:"RAI SURAJ MUKESH", nick:"SURAJ", bio:"", avatar:"photos/roll48.jpg", insta:""},
+    {roll:49, gr:31942, name:"RAJBHAR ANURAG RAJESH", nick:"ANURAG", bio:"", avatar:"photos/roll49.jpg", insta:""},
+    {roll:50, gr:32003, name:"RAM ANUJ KUMAR JAGDISH", nick:"ANUJ", bio:"", avatar:"photos/roll50.jpg", insta:""},
+    {roll:51, gr:31840, name:"SAHU AAYUSH KUMAR SHRAVAN KUMAR", nick:"AAYUSH", bio:"", avatar:"photos/roll51.jpg", insta:""},
+    {roll:52, gr:30771, name:"SAHU ABHISHEK INDRESH", nick:"ABHISHEK", bio:"", avatar:"photos/roll52.jpg", insta:""},
+    {roll:53, gr:31857, name:"SAHU SHIVAM NIRMAL", nick:"SHIVAM", bio:"", avatar:"photos/roll53.jpg", insta:""},
+    {roll:54, gr:31933, name:"SHARMA AASHISH HEERALAL", nick:"AASHISH", bio:"", avatar:"photos/roll54.jpg", insta:""},
+    {roll:55, gr:31972, name:"SHARMA SUNNY SANJAY", nick:"SUNNY", bio:"", avatar:"photos/roll55.jpg", insta:""},
+    {roll:56, gr:30759, name:"SINGH AMAN MANOJ", nick:"AMAN", bio:"", avatar:"photos/roll56.jpg", insta:""},
+    {roll:57, gr:31741, name:"SONI ANSH AJAY", nick:"ANSH", bio:"", avatar:"photos/roll57.jpg", insta:""},
+    {roll:58, gr:31884, name:"SUTAR ADITYA AJIT", nick:"ADITYA", bio:"", avatar:"photos/roll58.jpg", insta:"_adityatheog"}
+  ],
+  "D": [],
+  "E": []
+};
+
+function showSection(section) {
+  const list = document.getElementById("studentList");
+  const teacherDiv = document.getElementById("teacherName");
+  list.innerHTML = "";
+  const students = studentsData[section] || [];
+  
+  if(students.length === 0){
+    const li = document.createElement("li");
+    li.textContent = "No student data available.";
+    li.style.textAlign = "center";
+    li.style.margin = "20px 0";
+    list.appendChild(li);
+  } else {
+    students.forEach(student => {
+      const li = document.createElement("li");
+      li.className = "student-item";
+      li.innerHTML = `<img src="${student.avatar || 'photos/default.jpg'}" class="student-avatar" alt="Avatar"><div><strong>${student.nick}</strong></div>`;
+      li.onclick = () => openModal(student);
+      list.appendChild(li);
+    });
+  }
+
+  teacherDiv.style.display = (section === "C") ? "block" : "none";
+}
+
+function openModal(student) {
+  document.getElementById("modalAvatar").src = student.avatar || 'photos/default.jpg';
+  document.getElementById("modalNick").innerText = student.nick || "";
+  document.getElementById("modalName").innerText = student.name || "";
+  document.getElementById("modalRoll").innerText = student.roll || "";
+  document.getElementById("modalGR").innerText = student.gr || "";
+  document.getElementById("modalBio").innerText = student.bio || "";
+  const insta = document.getElementById("modalInstagram");
+  if(student.insta) {
+    insta.innerHTML = `<b>Instagram:</b> <a href="https://instagram.com/${student.insta}" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"> @${student.insta}
+    </a>`;
+  } else {
+    insta.innerHTML = "";
+  }
+  document.getElementById("studentModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("studentModal").style.display = "none";
+}
+
+window.onclick = (e) => { if(e.target == document.getElementById("studentModal")) closeModal(); }
+
+const video = document.getElementById("bgVideo");
+video.onerror = () => { video.style.display = "none"; document.body.style.background = "linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #ffb347)"; }
+
+const music = document.getElementById("bgMusic");
+music.onerror = () => { music.pause(); }
+
+showSection("C");
+
+</script>
+</body>
+  </html>
