@@ -145,9 +145,23 @@ h1 {
 <video autoplay muted loop class="background-video" id="bgVideo">
   <source src="photos/background.mp4" type="video/mp4">
 </video>
-<audio autoplay loop id="bgMusic">
+<audio id="bgMusic" loop>
   <source src="photos/music.mp3" type="audio/mpeg">
 </audio>
+
+<!-- Optional play/pause button -->
+<button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
+
+<script>
+const music = document.getElementById('bgMusic');
+function toggleMusic() {
+  if (music.paused) {
+    music.play();
+  } else {
+    music.pause();
+  }
+}
+</script>
 
 <h1>10th Students</h1>
 <div class="section-list">
