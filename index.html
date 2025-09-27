@@ -146,14 +146,16 @@ h1 {
   <source src="photos/background.mp4" type="video/mp4">
 </video>
 <audio id="bgMusic" loop>
+<audio id="bgMusic" loop>
   <source src="photos/music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Optional play/pause button -->
+<!-- Play/pause button -->
 <button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
 
 <script>
-const music = document.getElementById('bgMusic');
+const music = document.getElementById('bgMusic'); // single declaration
+
 function toggleMusic() {
   if (music.paused) {
     music.play();
@@ -161,6 +163,11 @@ function toggleMusic() {
     music.pause();
   }
 }
+
+// Load default section after DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  showSection("C");
+});
 </script>
 
 <h1>10th Students</h1>
