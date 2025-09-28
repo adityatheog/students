@@ -139,6 +139,45 @@ h1 {
   object-fit: cover;
   z-index: -1;
 }
+
+/* Music popup */
+#musicPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+#musicPopup .popup-box {
+  background: #1e1e2f;
+  color: #fff;
+  padding: 25px 35px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  animation: popupScale 0.4s ease;
+}
+#musicPopup button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #4ade80;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#musicPopup button:hover {
+  background: #22c55e;
+  transform: scale(1.05);
+}
+@keyframes popupScale {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -153,8 +192,14 @@ h1 {
     <source src="photos/music.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Play/pause button -->
-  <button onclick="toggleMusic()" style="position:fixed; top:20px; right:20px; z-index:1000;">Play Music</button>
+  <!-- Music popup -->
+  <div id="musicPopup">
+    <div class="popup-box">
+      <h2>🎵 Welcome!</h2>
+      <p>Click below to play background music</p>
+      <button onclick="startMusic()">Play Music</button>
+    </div>
+  </div>
 
   <h1>10th Students</h1>
 
@@ -185,10 +230,21 @@ h1 {
 
 <script>
 const music = document.getElementById('bgMusic');
-function toggleMusic() {
-  if (music.paused) music.play();
-  else music.pause();
+
+function startMusic() {
+  music.play();
+  document.getElementById("musicPopup").style.display = "none";
+  sessionStorage.setItem("musicPlayed", "true");
 }
+
+window.onload = () => {
+  if (sessionStorage.getItem("musicPlayed") === "true") {
+    music.play();
+    document.getElementById("musicPopup").style.display = "none";
+  } else {
+    document.getElementById("musicPopup").style.display = "flex";
+  }
+};
 
 const studentsData = {
   "A": [],
@@ -280,7 +336,6 @@ function showSection(section) {
     });
   }
 
-  // Show teacher only for class C
   teacherDiv.style.display = (section === "C") ? "block" : "none";
 }
 
@@ -308,22 +363,18 @@ function closeModal() {
   document.getElementById("studentModal").style.display = "none";
 }
 
-// Close modal when clicking outside
 window.onclick = (e) => {
   if(e.target === document.getElementById("studentModal")) closeModal();
 }
 
-// Hide video if not found
 const video = document.getElementById("bgVideo");
 video.onerror = () => {
   video.style.display = "none";
   document.body.style.background = "linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #ffb347)";
 }
 
-// Hide music if not found
 music.onerror = () => { music.pause(); }
 
-// Show default section on page load
 showSection("C");
 </script>
 </body>
